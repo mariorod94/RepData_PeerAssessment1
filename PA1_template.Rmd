@@ -6,20 +6,183 @@ output:
 ---
 
 
-## Loading and preprocessing the data
+## **Loading and preprocessing the data**  
+
+Loading and seeing data
+
+```{r cache=TRUE}
+library(readr)
+library(dplyr)
+data <- read_csv("activity.csv")
+head(data)
+str(data)
+```
+
+Format date and interval variables
+
+```{r cache=TRUE}
+
+data$date <- as.Date(data$date, format = "%Y-%m-%d")
+# data$interval <- factor(data$interval)
+```
 
 
+## **What is mean total number of steps taken per day?**  
 
-## What is mean total number of steps taken per day?
+Steps per day
+
+```{r cache=TRUE}
+steps <- data %>% 
+  group_by(date) %>% 
+  summarise(steps = sum(steps, na.rm = TRUE))
+
+head(steps)
+```
+
+Histogram of steps per day
+
+```{r cache=TRUE}
+hist(steps$steps, main = "Total Steps Per Day", xlab = "Steps", 
+     col = "dark blue")
+```
+  
+Mean steps by day
+
+```{r cache=TRUE}
+mean(steps$steps)
+```
+
+Median of steps by day
+
+```{r cache=TRUE}
+median(steps$steps)
+```
 
 
+## **What is the average daily activity pattern?**
 
-## What is the average daily activity pattern?
+Average steps across all days
+```{r cache=TRUE}
+steps_interval <- data %>% 
+  group_by(interval) %>% 
+  summarise(meansteps = mean(steps, na.rm = TRUE))
+
+head(steps_interval)
+```
+
+Plot of average steps per day by interval
+
+```{r cache=TRUE}
+plot(steps_interval$meansteps ~ steps_interval$interval, col = "dark blue",
+     type = "l", main = "Mean Steps By Time Interval", xlab = "5min Interval",
+     ylab = "Mean Steps")
+
+```
+
+Interval containing the most steps on average
+```{r cache=TRUE}
+most_steps <- steps_interval$interval[which.max(steps_interval$meansteps)]
+print(most_steps)
+```
+
+Average steps for the previous interval
+```{r cache=TRUE}
+average_most <- max(steps_interval$meansteps)
+print(average_most)
+```
 
 
+## **Imputing missing values**
 
-## Imputing missing values
+Total number of NA's
+```{r cache=TRUE}
+print(sum(is.na(data$steps)))
+```
+
+NA's Strategy:  
+Replacing steps NA's with mean steps for the interval.  
+  
+Creating a new dataset without NA values
+```{r cache=TRUE}
+data_nona <- data
+
+for (i in 1:nrow(data)) {
+  if(is.na(data$steps[i])) {
+    data_nona$steps[i] <- steps_interval$meansteps[data_nona$interval[i] == 
+                                                     steps_interval$interval]
+  }
+}
+
+head(data_nona)
+```
+
+New histogram of total steps taken per day
+
+```{r cache=TRUE}
+steps_day2 <- data_nona %>% 
+  group_by(date) %>% 
+  summarise(steps = sum(steps))
+
+hist(steps_day2$steps, main = "New Total Steps Per Day", xlab = "Steps", 
+     col = "dark blue")
+```
+
+New mean steps by day
+
+```{r cache=TRUE}
+mean(steps_day2$steps)
+```
+
+New median of steps by day
+
+```{r cache=TRUE}
+median(steps_day2$steps)
+```
+
+The new average is different because on the original NA values were removed. After filling NA
+values, the average increased.
 
 
+## **Are there differences in activity patterns between weekdays and weekends?**
 
-## Are there differences in activity patterns between weekdays and weekends?
+Creating factor variable for weekday and weekend and filter each activity
+
+```{r cache=TRUE}
+data2 <- data_nona
+data2$date <- as.Date(data2$date)
+data2$day <- ifelse(weekdays(data2$date) %in% c("Saturday", "Sunday"), 
+                    "weekend", "weekday")
+
+weekday <- filter(data2, day == "weekday") %>% 
+  group_by(interval) %>% 
+  summarise(steps = mean(steps)) %>% 
+  mutate(day = as.factor("weekday"))
+
+weekend <- filter(data2, day == "weekend") %>% 
+  group_by(interval) %>% 
+  summarise(steps = mean(steps)) %>% 
+  mutate(day = as.factor("weekend"))
+
+```
+
+Creating new dataset
+
+```{r cache=TRUE}
+data_days <- rbind(weekday, weekend)
+data_days$day <- as.factor(data_days$day)
+
+```
+
+Plotting weekday and weekend activity
+
+```{r cache=TRUE}
+library(ggplot2)
+ggplot(data_days, aes(interval, steps)) +
+  geom_line() +
+  facet_grid(day~.) +
+  ggtitle("Average steps: Weekday vs Weekend") +
+  xlab("Interval") +
+  ylab("Steps")
+```
+  
+There are little differences in steps patterns by interval on weekdays and weekend.
