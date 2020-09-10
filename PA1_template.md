@@ -14,26 +14,6 @@ Loading and seeing data
 ```r
 library(readr)
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 data <- read_csv("activity.csv")
 ```
 
@@ -60,23 +40,6 @@ head(data)
 ## 4    NA 2012-10-01       15
 ## 5    NA 2012-10-01       20
 ## 6    NA 2012-10-01       25
-```
-
-```r
-str(data)
-```
-
-```
-## tibble [17,568 x 3] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
-##  $ steps   : num [1:17568] NA NA NA NA NA NA NA NA NA NA ...
-##  $ date    : Date[1:17568], format: "2012-10-01" "2012-10-01" ...
-##  $ interval: num [1:17568] 0 5 10 15 20 25 30 35 40 45 ...
-##  - attr(*, "spec")=
-##   .. cols(
-##   ..   steps = col_double(),
-##   ..   date = col_date(format = ""),
-##   ..   interval = col_double()
-##   .. )
 ```
 
 Format date and interval variables
@@ -302,6 +265,7 @@ median(steps_day2$steps)
 
 The new average is different because on the original NA values were removed. After filling NA
 values, the average increased.
+
 
 
 ## **Are there differences in activity patterns between weekdays and weekends?**

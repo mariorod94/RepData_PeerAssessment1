@@ -15,7 +15,6 @@ library(readr)
 library(dplyr)
 data <- read_csv("activity.csv")
 head(data)
-str(data)
 ```
 
 Format date and interval variables
@@ -141,6 +140,7 @@ median(steps_day2$steps)
 
 The new average is different because on the original NA values were removed. After filling NA
 values, the average increased.
+
 
 
 ## **Are there differences in activity patterns between weekdays and weekends?**

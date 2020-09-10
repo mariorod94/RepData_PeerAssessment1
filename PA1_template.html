@@ -370,16 +370,8 @@ summary {
 <h2><strong>Loading and preprocessing the data</strong></h2>
 <p>Loading and seeing data</p>
 <pre class="r"><code>library(readr)
-library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>data &lt;- read_csv(&quot;activity.csv&quot;)</code></pre>
+library(dplyr)
+data &lt;- read_csv(&quot;activity.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   steps = col_double(),
@@ -396,17 +388,6 @@ library(dplyr)</code></pre>
 ## 4    NA 2012-10-01       15
 ## 5    NA 2012-10-01       20
 ## 6    NA 2012-10-01       25</code></pre>
-<pre class="r"><code>str(data)</code></pre>
-<pre><code>## tibble [17,568 x 3] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
-##  $ steps   : num [1:17568] NA NA NA NA NA NA NA NA NA NA ...
-##  $ date    : Date[1:17568], format: &quot;2012-10-01&quot; &quot;2012-10-01&quot; ...
-##  $ interval: num [1:17568] 0 5 10 15 20 25 30 35 40 45 ...
-##  - attr(*, &quot;spec&quot;)=
-##   .. cols(
-##   ..   steps = col_double(),
-##   ..   date = col_date(format = &quot;&quot;),
-##   ..   interval = col_double()
-##   .. )</code></pre>
 <p>Format date and interval variables</p>
 <pre class="r"><code>data$date &lt;- as.Date(data$date, format = &quot;%Y-%m-%d&quot;)
 # data$interval &lt;- factor(data$interval)</code></pre>
